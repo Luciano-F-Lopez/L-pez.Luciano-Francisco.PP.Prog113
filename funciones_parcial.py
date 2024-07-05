@@ -664,11 +664,12 @@ def leer_archivo_csv(nombre_archivo_csv:str)->list:
                 persona = {}
                 linea = linea.strip("\n").split(",")
 
-                id,nombre,tipo,tiempo = linea
-                persona["id_bike"] = int(id)
-                persona["nombre"] = (nombre)
-                persona["tipo"] = (tipo)
-                persona["tiempo"] = float(tiempo)
+                id,user,likes,dislikes,followers = linea
+                persona["id"] = int(id)
+                persona["user"] = (user)
+                persona["likes"] = int(likes)
+                persona["dislikes"] = int(dislikes)
+                persona["followers"] = int(followers)
                 lista.append(persona)
         print(f"El archivo {nombre_archivo_csv} ha sido cargado exitosamente.")
         return lista
@@ -733,12 +734,28 @@ def guardar_archivo_csv(lista:list,nombre_archivo_csv)->any:
 #------------------------------------------------------------------------------------------------------------------------
     
 def tomar_ruta_actual(archivo):
+    """tomar_ruta_actual
+
+    Args:
+        archivo (_type_): pasamos el archivo del que queremos saber su ruta
+
+    Returns:
+        _type_: nos devuelve la ruta del archivo 
+    """
     ruta_actual = os.path.dirname(__file__)
     return os.path.join(ruta_actual, archivo)
 
 #------------------------------------------------------------------------------------------------------------------------
 
 def leer_archivo_json(archivo_json:str):
+    """leer_archivo_json
+
+    Args:
+        archivo_json (str): pasamos el archivo a leer
+
+    Returns:
+        _type_: devuelve una lista con los datos listos para usar 
+    """
     with open(get_path_actual(archivo_json),"r",encoding="utf-8") as archivo: # ya podemos usar los datos del.json
         lista = json.load(archivo)
         return lista
@@ -782,6 +799,32 @@ def bicileta_random(lista:list)->list:
         lista_tiempo = randint(50, 120)
         lista[i]["tiempo"] = lista_tiempo    
     return lista
+
+#------------------------------------------------------------------------------------------------------------------------
+def cambiar_likes_random(lista:list)->list:
+    if not isinstance(lista, list): raise TypeError ("primer parametro debe ser una lista")
+    for i in range(len(lista)):
+        lista_tiempo = randint(500, 3000)
+        lista[i]["likes"] = lista_tiempo    
+    return lista
+#------------------------------------------------------------------------------------------------------------------------
+def cambiar_dislikes_random(lista:list)->list:
+    if not isinstance(lista, list): raise TypeError ("primer parametro debe ser una lista")
+    for i in range(len(lista)):
+        lista_tiempo = randint(300, 3500)
+        lista[i]["dislikes"] = lista_tiempo    
+    return lista
+
+#------------------------------------------------------------------------------------------------------------------------
+def cambiar_followers_random(lista:list)->list:
+    if not isinstance(lista, list): raise TypeError ("primer parametro debe ser una lista")
+    for i in range(len(lista)):
+        lista_tiempo = randint(10000, 20000)
+        lista[i]["followers"] = lista_tiempo    
+    return lista
+
+
+
 
 #------------------------------------------------------------------------------------------------------------------------
 
@@ -863,13 +906,13 @@ def tipo_bicicletas(lista:list,bicicleta_a_elegir:str)->any: # j
 #------------------------------------------------------------------------------------------------------------------------
 
 def promedio_tipo_bici(lista:list,target)->any:#c
-    """mas_alto_masculino
+    """promedio_tipo_bici
 
     Args:
         lista_super (list): pasamos la lista original
 
     Returns:
-        any: devuelve el mas alto de los masculinos
+        any: devuelve el promedio
     """
     if not isinstance(lista, list): raise TypeError ("primer parametro debe ser una lista")
     tipo = filtrar_listas(lambda tiempo: (tiempo["tipo"] == target),lista)
@@ -880,8 +923,8 @@ def promedio_tipo_bici(lista:list,target)->any:#c
 #------------------------------------------------------------------------------------------------------------------------
 
 
-def ordenar_ascendente_por_tiempo(lista):
-    """ordenar_ascendente_por_tiempo
+def ordenar_ascendente_por_nombre_user(lista):
+    """ordenar_ascendente_por_nombre
 
     Args:
         lista (_type_): pasamos la lista a ordenar
@@ -894,12 +937,31 @@ def ordenar_ascendente_por_tiempo(lista):
     for i in range(n):
         min_idx = i
         for j in range(i + 1, n):
-            if lista[j]['tiempo'] < lista[min_idx]['tiempo']:
+            if len(lista[j]['user']) < len(lista[min_idx]['user']):
                 min_idx = j
         # Intercambiar elementos
         lista[i], lista[min_idx] = lista[min_idx], lista[i]
     
     return lista
+
+
+
+
+def post_mas_likeado(lista:list)->str:
+    """post_mas_likeado
+
+    Args:
+        lista (list): pasamos la lista 
+
+    Returns:
+        str: devuelve el post_mas_likeado
+    """
+    if not isinstance(lista, list): raise TypeError ("primer parametro debe ser una lista")
+
+    nombre_likes = mapear_list(lambda likesynombre: (likesynombre["likes"],likesynombre["user"]),lista)
+    ganador = calcular_mayor(nombre_likes)
+    mensaje = f"el user con mas likes es  {ganador[1]} y la cantidad de likes son: {ganador[0]}"
+    return mensaje
 
 
 #para terminar  Luciano López: git init
