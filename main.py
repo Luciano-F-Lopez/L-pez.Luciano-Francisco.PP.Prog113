@@ -3,18 +3,27 @@ from menu_parcial import *
 
 
 flag_asignar_estadisticas = False
+carga_correcta_csv = False
 while True:
     match menu_01():
         case"1":
-            post = leer_archivo_csv("posts.csv")
+            nombre_arc = input("ingrese el nombre del archivo: ").lower()
+            if nombre_arc != "posts":
+                print("ese no es el nombre del csv reingreselo: ")
+            else: 
+                post = leer_archivo_csv(f"{nombre_arc}.csv")
+                carga_correcta_csv = True
         case"2":
             print(post)
         case"3":
-            cambiar_likes_random(post)
-            cambiar_dislikes_random(post)
-            cambiar_followers_random(post)
-            flag_asignar_estadisticas = True
-            print("se asignaron las estadisticas con exito")
+            if carga_correcta_csv == True:
+                cambiar_likes_random(post)
+                cambiar_dislikes_random(post)
+                cambiar_followers_random(post)
+                flag_asignar_estadisticas = True
+                print("se asignaron las estadisticas con exito")
+            else: 
+                print("no se cargo el csv reintentelo")
         case"4":
             if flag_asignar_estadisticas == True:
                 mas_likes = filtrar_listas(lambda mas2000:(mas2000["likes"] > 2000),post)
